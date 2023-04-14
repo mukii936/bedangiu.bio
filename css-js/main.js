@@ -32,6 +32,7 @@ document.addEventListener("keydown", function(event) {
   var snow = function() {
 
     var canvas = document.createElement("canvas");
+
     canvas.setAttribute("id", "snow");
 
     document.body.appendChild(canvas);
@@ -91,14 +92,55 @@ document.addEventListener("keydown", function(event) {
 
 snow();
 
-var audio = document.getElementById("myAudio");
+function showVolumeNotification() {
+  var volumeNotification = document.createElement("div");
+  volumeNotification.setAttribute("id", "volume-notification");
+  volumeNotification.innerHTML = "Âm lượng đã thay đổi!";
+  document.body.appendChild(volumeNotification);
 
-document.addEventListener("keydown", function(event) {
-  if (event.keyCode === 77) {
-    if (audio.paused) {
-      audio.play();
-    } else {
-      audio.pause();
-    }
+  setTimeout(function() {
+    document.body.removeChild(volumeNotification);
+  }, 2000);
+}
+
+var audioElement = document.getElementById('audio');
+var playPauseBTN = document.getElementById('playPauseBTN');
+var count = 0;
+
+function playPause(){
+  if(count == 0){
+    count = 1;
+    audioElement.play();
+    playPauseBTN.innerHTML = "Pause";
+  }else{
+    count = 0;
+    audioElement.pause();
+    playPauseBTN.innerHTML = "Play";
+  }
+}
+
+function formatVolume(volume) {
+  return (volume * 100).toFixed(2) + '%';
+}
+
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'n' || event.key === 'N') {
+    playPause();
+  } else if (event.key === 'a' || event.key === 'A') {
+    audioElement.volume -= 0.1; // giảm âm lượng đi 10%
+    var volume = formatVolume(audioElement.volume);
+    showVolumeNotification();
+  } else if (event.key === 'd' || event.key === 'D') {
+    audioElement.volume += 0.1; // tăng âm lượng lên 10%
+    var volume = formatVolume(audioElement.volume);
+    showVolumeNotification();
   }
 });
+
+playPauseBTN.addEventListener('click', function() {
+  playPause();
+});
+
+
+
+
